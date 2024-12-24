@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        https://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd">  <!-- Corrected this line -->
+
+    <!-- 扫包 -->
+    <context:component-scan base-package="edu.cqie.controller"/>
+
+    <mvc:annotation-driven>
+        <mvc:message-converters>
+            <bean class="com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter">
+                <property name="supportedMediaTypes">
+                    <list>
+                        <value>application/json;charset=UTF-8</value>
+                        <value>text/html;charset=UTF-8</value>
+                    </list>
+                </property>
+            </bean>
+        </mvc:message-converters>
+    </mvc:annotation-driven>
+
+    <!-- 视图解析器 -->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/pages/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
+
+    <bean id="cacheManager" class="org.springframework.cache.concurrent.ConcurrentMapCacheManager"/>
+
+    <!-- 静态资源处理器 -->
+    <mvc:default-servlet-handler/>  <!-- Corrected this line -->
+
+<!--    5拦截器-->
+<!--    <mvc:interceptors>-->
+<!--        <mvc:interceptor>-->
+<!--            <mvc:mapping path="/**"/>-->
+<!--            <mvc:mapping path="/**"/>-->
+<!--            <mvc:exclude-mapping path="/mylogin"/>-->
+<!--            <mvc:exclude-mapping path="/api/login"/>-->
+<!--            <bean class="edu.cqie.interceptor.LoginInterceptor"/>-->
+<!--        </mvc:interceptor>-->
+<!--    </mvc:interceptors>-->
+
+    <mvc:cors>
+        <mvc:mapping path="/**" allowed-origins="http://localhost:8081"/>
+    </mvc:cors>
+
+    <!--邮箱验证-->
+    <bean id="javaMailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+        <property name="host" value="smtp.qq.com"/>
+        <property name="username" value="1195694857@qq.com"/>
+        <property name="password" value="yxrgmclicemvbaga"/>
+        <property name="port" value="465"/> <!-- SSL加密连接的端口 -->
+        <property name="defaultEncoding" value="utf-8"/>
+        <property name="javaMailProperties">
+            <map>
+                <entry key="mail.smtp.auth" value="true"/>
+                <entry key="mail.smtp.ssl.enable" value="true"/> <!-- 启用SSL -->
+                <entry key="mail.smtp.port" value="465"/> <!-- SSL加密连接的端口 -->
+            </map>
+        </property>
+    </bean>
+</beans>

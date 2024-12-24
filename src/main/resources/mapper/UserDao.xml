@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="edu.cqie.mapper.UserDao">
+
+    <resultMap type="edu.cqie.entity.User" id="UserMap">
+        <result property="userId" column="user_id" jdbcType="INTEGER"/>
+        <result property="username" column="username" jdbcType="VARCHAR"/>
+        <result property="realName" column="real_name" jdbcType="VARCHAR"/>
+        <result property="password" column="password" jdbcType="VARCHAR"/>
+        <result property="age" column="age" jdbcType="INTEGER"/>
+        <result property="phoneNumber" column="phone_number" jdbcType="VARCHAR"/>
+        <result property="email" column="email" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="UserMap">
+        select user_id,
+               username,
+               real_name,
+               password,
+               age,
+               phone_number,
+               email
+        from user
+        where user_id = #{userId}
+    </select>
+
+    <!--登录逻辑-->
+    <select id="login" resultMap="UserMap">
+        SELECT *
+        FROM user
+        WHERE username = #{username}
+          AND password = #{password}
+    </select>
+
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="UserMap">
+        select
+        user_id, username, real_name, password, age, phone_number, email
+        from user
+        <where>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+            <if test="username != null and username != ''">
+                and username = #{username}
+            </if>
+            <if test="realName != null and realName != ''">
+                and real_name = #{realName}
+            </if>
+            <if test="password != null and password != ''">
+                and password = #{password}
+            </if>
+            <if test="age != null">
+                and age = #{age}
+            </if>
+            <if test="phoneNumber != null and phoneNumber != ''">
+                and phone_number = #{phoneNumber}
+            </if>
+            <if test="email != null and email != ''">
+                and email = #{email}
+            </if>
+        </where>
+        limit #{pageable.offset}, #{pageable.pageSize}
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from user
+        <where>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+            <if test="username != null and username != ''">
+                and username = #{username}
+            </if>
+            <if test="realName != null and realName != ''">
+                and real_name = #{realName}
+            </if>
+            <if test="password != null and password != ''">
+                and password = #{password}
+            </if>
+            <if test="age != null">
+                and age = #{age}
+            </if>
+            <if test="phoneNumber != null and phoneNumber != ''">
+                and phone_number = #{phoneNumber}
+            </if>
+            <if test="email != null and email != ''">
+                and email = #{email}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="userId" useGeneratedKeys="true">
+        insert into user(username, real_name, password, age, phone_number, email)
+        values (#{username}, #{realName}, #{password}, #{age}, #{phoneNumber}, #{email})
+    </insert>
+
+    <!--新增所有列-->
+    <insert id="register" keyProperty="userId" useGeneratedKeys="true">
+        insert into user(username, password, email)
+        values (#{username}, #{password}, #{email})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="userId" useGeneratedKeys="true">
+        insert into user(username, real_name, password, age, phone_number, email)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.username}, #{entity.realName}, #{entity.password}, #{entity.age}, #{entity.phoneNumber},
+            #{entity.email})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="userId" useGeneratedKeys="true">
+        insert into user(username, real_name, password, age, phone_number, email)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.username}, #{entity.realName}, #{entity.password}, #{entity.age}, #{entity.phoneNumber},
+            #{entity.email})
+        </foreach>
+        on duplicate key update
+        username = values(username),
+        real_name = values(real_name),
+        password = values(password),
+        age = values(age),
+        phone_number = values(phone_number),
+        email = values(email)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update user
+        <set>
+            <if test="username != null and username != ''">
+                username = #{username},
+            </if>
+            <if test="realName != null and realName != ''">
+                real_name = #{realName},
+            </if>
+            <if test="password != null and password != ''">
+                password = #{password},
+            </if>
+            <if test="age != null">
+                age = #{age},
+            </if>
+            <if test="phoneNumber != null and phoneNumber != ''">
+                phone_number = #{phoneNumber},
+            </if>
+            <if test="email != null and email != ''">
+                email = #{email},
+            </if>
+        </set>
+        where user_id = #{userId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete
+        from user
+        where user_id = #{userId}
+    </delete>
+
+</mapper>
+

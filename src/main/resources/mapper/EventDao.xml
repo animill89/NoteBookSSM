@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="edu.cqie.mapper.EventDao">
+
+    <resultMap type="edu.cqie.entity.Event" id="EventMap">
+        <result property="eventId" column="event_id" jdbcType="INTEGER"/>
+        <result property="userId" column="user_id" jdbcType="INTEGER"/>
+        <result property="categoryId" column="category_id" jdbcType="INTEGER"/>
+        <result property="categoryName" column="category_name" jdbcType="VARCHAR"/>
+        <result property="eventTitle" column="event_title" jdbcType="VARCHAR"/>
+        <result property="startDate" column="start_date" jdbcType="TIMESTAMP"/>
+        <result property="endDate" column="end_date" jdbcType="TIMESTAMP"/>
+        <result property="eventContent" column="event_content" jdbcType="VARCHAR"/>
+        <result property="eventLevel" column="event_level" jdbcType="INTEGER"/>
+        <result property="isCompleted" column="is_completed" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="EventMap">
+        select event_id,
+               user_id,
+               category_id,
+               event_title,
+               start_date,
+               end_date,
+               event_content,
+               event_level,
+               is_completed
+        from event
+        where event_id = #{eventId}
+    </select>
+
+    <!--查询用户所属任务-->
+    <select id="selectListByUserId" resultMap="EventMap">
+        SELECT e.event_id,
+               e.user_id,
+               c.category_name,
+               e.event_title,
+               e.start_date,
+               e.end_date,
+               e.event_content,
+               e.event_level,
+               e.is_completed
+        FROM event e
+                 JOIN event_category c ON e.category_id = c.category_id
+        WHERE e.user_id = #{userId};
+    </select>
+    <!--    搜索任务详情-->
+    <select id="searchEvent" resultMap="EventMap">
+        SELECT *
+        FROM event
+        WHERE user_id = #{userId}
+        <if test="eventLevel != null and eventLevel != ''">
+            AND event_level = #{eventLevel}
+        </if>
+        <if test="isCompleted != null and isCompleted != ''">
+            AND is_completed = #{isCompleted}
+        </if>
+        <if test="eventContent != null and eventContent != ''">
+            AND event_content LIKE CONCAT('%', #{eventContent}, '%')
+        </if>
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="EventMap">
+        select
+        event_id, user_id, category_id, event_title, start_date, end_date, event_content, event_level, is_completed
+        from event
+        <where>
+            <if test="eventId != null">
+                and event_id = #{eventId}
+            </if>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+            <if test="categoryId != null">
+                and category_id = #{categoryId}
+            </if>
+            <if test="eventTitle != null and eventTitle != ''">
+                and event_title = #{eventTitle}
+            </if>
+            <if test="startDate != null">
+                and start_date = #{startDate}
+            </if>
+            <if test="endDate != null">
+                and end_date = #{endDate}
+            </if>
+            <if test="eventContent != null and eventContent != ''">
+                and event_content = #{eventContent}
+            </if>
+            <if test="eventLevel != null">
+                and event_level = #{eventLevel}
+            </if>
+            <if test="isCompleted != null">
+                and is_completed = #{isCompleted}
+            </if>
+        </where>
+        limit #{pageable.offset}, #{pageable.pageSize}
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from event
+        <where>
+            <if test="eventId != null">
+                and event_id = #{eventId}
+            </if>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+            <if test="categoryId != null">
+                and category_id = #{categoryId}
+            </if>
+            <if test="eventTitle != null and eventTitle != ''">
+                and event_title = #{eventTitle}
+            </if>
+            <if test="startDate != null">
+                and start_date = #{startDate}
+            </if>
+            <if test="endDate != null">
+                and end_date = #{endDate}
+            </if>
+            <if test="eventContent != null and eventContent != ''">
+                and event_content = #{eventContent}
+            </if>
+            <if test="eventLevel != null">
+                and event_level = #{eventLevel}
+            </if>
+            <if test="isCompleted != null">
+                and is_completed = #{isCompleted}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="eventId" useGeneratedKeys="true">
+        insert into event(user_id, category_id, event_title, start_date, end_date, event_content, event_level,
+                          is_completed)
+        values (#{userId}, #{categoryId}, #{eventTitle}, #{startDate}, #{endDate}, #{eventContent}, #{eventLevel},
+                #{isCompleted})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="eventId" useGeneratedKeys="true">
+        insert into event(user_id, category_id, event_title, start_date, end_date, event_content, event_level,
+        is_completed)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.userId}, #{entity.categoryId}, #{entity.eventTitle}, #{entity.startDate}, #{entity.endDate},
+            #{entity.eventContent}, #{entity.eventLevel}, #{entity.isCompleted})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" parameterType="edu.cqie.entity.Event" useGeneratedKeys="true"
+            keyProperty="eventId">
+        INSERT INTO event (user_id, category_id, event_title, start_date, end_date, event_content, event_level,
+                           is_completed)
+        VALUES (#{userId}, #{categoryId}, #{eventTitle}, #{startDate}, #{endDate}, #{eventContent}, #{eventLevel},
+                #{isCompleted})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update event
+        <set>
+            <if test="userId != null">
+                user_id = #{userId},
+            </if>
+            <if test="categoryId != null">
+                category_id = #{categoryId},
+            </if>
+            <if test="eventTitle != null and eventTitle != ''">
+                event_title = #{eventTitle},
+            </if>
+            <if test="startDate != null">
+                start_date = #{startDate},
+            </if>
+            <if test="endDate != null">
+                end_date = #{endDate},
+            </if>
+            <if test="eventContent != null and eventContent != ''">
+                event_content = #{eventContent},
+            </if>
+            <if test="eventLevel != null">
+                event_level = #{eventLevel},
+            </if>
+            <if test="isCompleted != null">
+                is_completed = #{isCompleted},
+            </if>
+        </set>
+        where event_id = #{eventId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete
+        from event
+        where event_id = #{eventId}
+    </delete>
+
+</mapper>
+

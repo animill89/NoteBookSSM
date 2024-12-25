@@ -22,7 +22,16 @@ public interface UserDao {
      */
     User queryById(Integer userId);
 
+    /*
+     * 用户登录
+     * */
     User login(@Param("username") String username, @Param("password") String password);
+
+    /*
+     * 邮箱登录
+     * */
+
+    User emailLogin(@Param("email") String email);
 
     /**
      * 查询指定行数据

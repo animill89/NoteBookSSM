@@ -12,6 +12,9 @@ import org.springframework.data.domain.PageRequest;
  */
 public interface UserService {
 
+    // 实现邮箱登录验证方法
+    User emailLogin(String email);
+
     /**
      * 通过ID查询单条数据
      *

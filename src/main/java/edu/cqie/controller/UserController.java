@@ -44,6 +44,26 @@ public class UserController {
     }
 
     /*
+     * 邮箱登录功能
+     * 2024年12月25日11:38:25
+     * 作者：Star_Star
+     * */
+    @RequestMapping("/emailLogin")
+    public ResponseEntity<User> emailLogin(User user, HttpSession session) {
+        String code = (String) session.getServletContext().getAttribute("captcha");
+        System.out.print(code);
+
+        if (code.equals(user.getCode())) {
+            // 登录成功后，移除 session 中的验证码
+            session.getServletContext().removeAttribute("captcha");
+            return ResponseEntity.ok(this.userService.emailLogin(user.getEmail()));
+        } else {
+            System.out.print("验证码错误");
+            return ResponseEntity.ok(null);
+        }
+    }
+
+    /*
      * 作者：刘星
      * 2024年12月15日14:34:43
      * 注册逻辑实现
@@ -52,7 +72,7 @@ public class UserController {
     @RequestMapping("/register")
     public ResponseEntity<User> register(@RequestBody User user, HttpSession session) {
 //
-        System.out.print(user);
+//        System.out.print(user);
         //从session中获取验证码
         String code = (String) session.getServletContext().getAttribute("captcha");
         System.out.print(code);
@@ -60,9 +80,9 @@ public class UserController {
         System.out.print(userCode);
 
         if (code.equals(user.getCode())) {
-            System.out.println("注册成功！！！");
+//            System.out.println("注册成功！！！");
             //清除session
-            session.invalidate();
+            session.getServletContext().removeAttribute("captcha");
             return ResponseEntity.ok(this.userService.register(user));
         } else {
             System.out.println("验证码错误！！！");
@@ -72,11 +92,6 @@ public class UserController {
     }
 
 
-    /*
-     * 作者：刘星
-     * 2024年12月15日14:34:43
-     * 退出
-     * */
 
 
     /**

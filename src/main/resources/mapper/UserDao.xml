@@ -33,6 +33,13 @@
           AND password = #{password}
     </select>
 
+    <!--    邮箱登录功能-->
+    <select id="emailLogin" resultMap="UserMap">
+        select *
+        from user
+        where email = #{email}
+    </select>
+
 
     <!--查询指定行数据-->
     <select id="queryAllByLimit" resultMap="UserMap">

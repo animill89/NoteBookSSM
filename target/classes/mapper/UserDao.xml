@@ -14,8 +14,13 @@
 
     <!--查询单个-->
     <select id="queryById" resultMap="UserMap">
-        select
-          user_id, username, real_name, password, age, phone_number, email
+        select user_id,
+               username,
+               real_name,
+               password,
+               age,
+               phone_number,
+               email
         from user
         where user_id = #{userId}
     </select>
@@ -24,15 +29,22 @@
     <select id="login" resultMap="UserMap">
         SELECT *
         FROM user
-        WHERE username = #{username} AND password = #{password}
+        WHERE username = #{username}
+          AND password = #{password}
     </select>
 
+<!--    邮箱登录功能-->
+    <select id="emailLogin" resultMap="UserMap">
+        select *
+        from user
+        where email = #{email}
+    </select>
 
 
     <!--查询指定行数据-->
     <select id="queryAllByLimit" resultMap="UserMap">
         select
-          user_id, username, real_name, password, age, phone_number, email
+        user_id, username, real_name, password, age, phone_number, email
         from user
         <where>
             <if test="userId != null">
@@ -105,7 +117,8 @@
         insert into user(username, real_name, password, age, phone_number, email)
         values
         <foreach collection="entities" item="entity" separator=",">
-        (#{entity.username}, #{entity.realName}, #{entity.password}, #{entity.age}, #{entity.phoneNumber}, #{entity.email})
+            (#{entity.username}, #{entity.realName}, #{entity.password}, #{entity.age}, #{entity.phoneNumber},
+            #{entity.email})
         </foreach>
     </insert>
 
@@ -113,7 +126,8 @@
         insert into user(username, real_name, password, age, phone_number, email)
         values
         <foreach collection="entities" item="entity" separator=",">
-            (#{entity.username}, #{entity.realName}, #{entity.password}, #{entity.age}, #{entity.phoneNumber}, #{entity.email})
+            (#{entity.username}, #{entity.realName}, #{entity.password}, #{entity.age}, #{entity.phoneNumber},
+            #{entity.email})
         </foreach>
         on duplicate key update
         username = values(username),
@@ -152,7 +166,9 @@
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from user where user_id = #{userId}
+        delete
+        from user
+        where user_id = #{userId}
     </delete>
 
 </mapper>

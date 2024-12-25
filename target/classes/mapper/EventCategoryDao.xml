@@ -10,32 +10,30 @@
 
     <!--查询单个-->
     <select id="queryById" resultMap="EventCategoryMap">
-        select
-          category_id, user_id, category_name
+        select category_id,
+               user_id,
+               category_name
         from event_category
         where category_id = #{categoryId}
     </select>
 
     <!--查询所有-->
     <select id="queryAll" resultMap="EventCategoryMap">
-        select
-            *
+        select *
         from event_category
     </select>
 
     <select id="queryEventAll" resultMap="EventCategoryMap">
-        select
-            *
+        select *
         from event_category
         where user_id = #{userId}
     </select>
 
 
-
     <!--查询指定行数据-->
     <select id="queryAllByLimit" resultMap="EventCategoryMap">
         select
-          category_id, user_id, category_name
+        category_id, user_id, category_name
         from event_category
         <where>
             <if test="categoryId != null">
@@ -78,7 +76,7 @@
         insert into event_category(user_id, category_name)
         values
         <foreach collection="entities" item="entity" separator=",">
-        (#{entity.userId}, #{entity.categoryName})
+            (#{entity.userId}, #{entity.categoryName})
         </foreach>
     </insert>
 
@@ -109,10 +107,10 @@
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from event_category where category_id = #{categoryId}
+        delete
+        from event_category
+        where category_id = #{categoryId}
     </delete>
-
-
 
 
 </mapper>

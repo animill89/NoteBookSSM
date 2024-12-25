@@ -9,7 +9,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 
 import javax.annotation.Resource;
-import java.util.Optional;
 
 /**
  * (User)表服务实现类
@@ -27,6 +26,13 @@ public class UserServiceImpl implements UserService {
     public User login(String username, String password) {
         return userDao.login(username, password);
     }
+
+    // 实现邮箱登录验证方法
+    @Override
+    public User emailLogin(String email) {
+        return userDao.emailLogin(email);
+    }
+
 
     /**
      * 通过ID查询单条数据

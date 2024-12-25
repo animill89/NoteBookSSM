@@ -7,13 +7,13 @@
     </resultMap>
 
     <select id="getTitleValue" resultMap="TitleValueMap">
-        SELECT
-            c.category_name,
-            COUNT(e.event_id) AS value
+        SELECT c.category_name,
+               COUNT(e.event_id) AS value
         FROM
             event e
             JOIN
-            event_category c ON e.category_id = c.category_id
+            event_category c
+        ON e.category_id = c.category_id
         WHERE
             e.user_id = #{userId}
         GROUP BY

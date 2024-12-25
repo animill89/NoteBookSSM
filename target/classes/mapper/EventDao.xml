@@ -17,20 +17,35 @@
 
     <!--查询单个-->
     <select id="queryById" resultMap="EventMap">
-        select
-          event_id, user_id, category_id, event_title, start_date, end_date, event_content, event_level, is_completed
+        select event_id,
+               user_id,
+               category_id,
+               event_title,
+               start_date,
+               end_date,
+               event_content,
+               event_level,
+               is_completed
         from event
         where event_id = #{eventId}
     </select>
 
     <!--查询用户所属任务-->
     <select id="selectListByUserId" resultMap="EventMap">
-        SELECT e.event_id, e.user_id, c.category_name, e.event_title, e.start_date, e.end_date, e.event_content, e.event_level, e.is_completed
+        SELECT e.event_id,
+               e.user_id,
+               c.category_name,
+               e.event_title,
+               e.start_date,
+               e.end_date,
+               e.event_content,
+               e.event_level,
+               e.is_completed
         FROM event e
-        JOIN event_category c ON e.category_id = c.category_id
+                 JOIN event_category c ON e.category_id = c.category_id
         WHERE e.user_id = #{userId};
     </select>
-<!--    搜索任务详情-->
+    <!--    搜索任务详情-->
     <select id="searchEvent" resultMap="EventMap">
         SELECT *
         FROM event
@@ -49,7 +64,7 @@
     <!--查询指定行数据-->
     <select id="queryAllByLimit" resultMap="EventMap">
         select
-          event_id, user_id, category_id, event_title, start_date, end_date, event_content, event_level, is_completed
+        event_id, user_id, category_id, event_title, start_date, end_date, event_content, event_level, is_completed
         from event
         <where>
             <if test="eventId != null">
@@ -120,21 +135,28 @@
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="eventId" useGeneratedKeys="true">
-        insert into event(user_id, category_id, event_title, start_date, end_date, event_content, event_level, is_completed)
-        values (#{userId}, #{categoryId}, #{eventTitle}, #{startDate}, #{endDate}, #{eventContent}, #{eventLevel}, #{isCompleted})
+        insert into event(user_id, category_id, event_title, start_date, end_date, event_content, event_level,
+                          is_completed)
+        values (#{userId}, #{categoryId}, #{eventTitle}, #{startDate}, #{endDate}, #{eventContent}, #{eventLevel},
+                #{isCompleted})
     </insert>
 
     <insert id="insertBatch" keyProperty="eventId" useGeneratedKeys="true">
-        insert into event(user_id, category_id, event_title, start_date, end_date, event_content, event_level, is_completed)
+        insert into event(user_id, category_id, event_title, start_date, end_date, event_content, event_level,
+        is_completed)
         values
         <foreach collection="entities" item="entity" separator=",">
-        (#{entity.userId}, #{entity.categoryId}, #{entity.eventTitle}, #{entity.startDate}, #{entity.endDate}, #{entity.eventContent}, #{entity.eventLevel}, #{entity.isCompleted})
+            (#{entity.userId}, #{entity.categoryId}, #{entity.eventTitle}, #{entity.startDate}, #{entity.endDate},
+            #{entity.eventContent}, #{entity.eventLevel}, #{entity.isCompleted})
         </foreach>
     </insert>
 
-    <insert id="insertOrUpdateBatch" parameterType="edu.cqie.entity.Event" useGeneratedKeys="true" keyProperty="eventId">
-        INSERT INTO event (user_id, category_id, event_title, start_date, end_date, event_content, event_level, is_completed)
-        VALUES (#{userId}, #{categoryId}, #{eventTitle}, #{startDate}, #{endDate}, #{eventContent}, #{eventLevel}, #{isCompleted})
+    <insert id="insertOrUpdateBatch" parameterType="edu.cqie.entity.Event" useGeneratedKeys="true"
+            keyProperty="eventId">
+        INSERT INTO event (user_id, category_id, event_title, start_date, end_date, event_content, event_level,
+                           is_completed)
+        VALUES (#{userId}, #{categoryId}, #{eventTitle}, #{startDate}, #{endDate}, #{eventContent}, #{eventLevel},
+                #{isCompleted})
     </insert>
 
     <!--通过主键修改数据-->
@@ -171,7 +193,9 @@
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from event where event_id = #{eventId}
+        delete
+        from event
+        where event_id = #{eventId}
     </delete>
 
 </mapper>

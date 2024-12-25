@@ -58,7 +58,7 @@ public class UserController {
             session.getServletContext().removeAttribute("captcha");
             return ResponseEntity.ok(this.userService.emailLogin(user.getEmail()));
         } else {
-            System.out.print("验证码错误");
+            System.out.print("验证码错误123");
             return ResponseEntity.ok(null);
         }
     }

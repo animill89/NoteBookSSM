@@ -33,7 +33,7 @@
           AND password = #{password}
     </select>
 
-<!--    邮箱登录功能-->
+    <!--    邮箱登录功能-->
     <select id="emailLogin" resultMap="UserMap">
         select *
         from user

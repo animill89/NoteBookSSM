@@ -39,15 +39,17 @@
     <mvc:default-servlet-handler/>  <!-- Corrected this line -->
 
     <!--    5拦截器-->
-    <!--    <mvc:interceptors>-->
-    <!--        <mvc:interceptor>-->
-    <!--            <mvc:mapping path="/**"/>-->
-    <!--            <mvc:mapping path="/**"/>-->
-    <!--            <mvc:exclude-mapping path="/mylogin"/>-->
-    <!--            <mvc:exclude-mapping path="/api/login"/>-->
-    <!--            <bean class="edu.cqie.interceptor.LoginInterceptor"/>-->
-    <!--        </mvc:interceptor>-->
-    <!--    </mvc:interceptors>-->
+<!--        <mvc:interceptors>-->
+<!--            <mvc:interceptor>-->
+<!--                <mvc:mapping path="/**"/>-->
+<!--                <mvc:mapping path="/**"/>-->
+<!--                <mvc:exclude-mapping path="/register"/>-->
+<!--                <mvc:exclude-mapping path="/login"/>-->
+<!--                <mvc:exclude-mapping path="/emailLogin"/>-->
+<!--                <mvc:exclude-mapping path="/sendEmail"/>-->
+<!--                <bean class="edu.cqie.interceptor.LoginInterceptor"/>-->
+<!--            </mvc:interceptor>-->
+<!--        </mvc:interceptors>-->
 
     <mvc:cors>
         <mvc:mapping path="/**" allowed-origins="http://localhost:8081"/>

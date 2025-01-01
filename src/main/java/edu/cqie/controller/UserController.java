@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 /**
@@ -32,11 +33,14 @@ public class UserController {
      * 登录逻辑实现
      * */
     @RequestMapping("/login")
-    public ResponseEntity<User> login(@RequestBody User user) {
+    public ResponseEntity<User> login(@RequestBody User user, HttpServletRequest request) {
         User u = userService.login(user.getUsername(), user.getPassword());
-        System.out.print(u);
-
+//        System.out.print(u);
         if (u != null) {
+            // 登录成功，将用户信息存入 session
+            HttpSession session = request.getSession();
+            session.getServletContext().setAttribute("username", u.getUsername());
+            System.out.print(session.getAttribute("username"));
             return ResponseEntity.ok(u);
         } else {
             return ResponseEntity.ok(null);
@@ -51,11 +55,13 @@ public class UserController {
     @RequestMapping("/emailLogin")
     public ResponseEntity<User> emailLogin(User user, HttpSession session) {
         String code = (String) session.getServletContext().getAttribute("captcha");
-        System.out.print(code);
+//        System.out.print(code);
 
         if (code.equals(user.getCode())) {
             // 登录成功后，移除 session 中的验证码
             session.getServletContext().removeAttribute("captcha");
+            // 登录成功，将用户信息存入 session
+            session.setAttribute("username",this.userService.emailLogin(user.getEmail()).getUsername());
             return ResponseEntity.ok(this.userService.emailLogin(user.getEmail()));
         } else {
             System.out.print("验证码错误");
@@ -75,9 +81,9 @@ public class UserController {
 //        System.out.print(user);
         //从session中获取验证码
         String code = (String) session.getServletContext().getAttribute("captcha");
-        System.out.print(code);
+//        System.out.print(code);
         String userCode = user.getCode();
-        System.out.print(userCode);
+//        System.out.print(userCode);
 
         if (code.equals(user.getCode())) {
 //            System.out.println("注册成功！！！");
@@ -114,7 +120,7 @@ public class UserController {
      */
     @GetMapping("{id}")
     public ResponseEntity<User> queryById(@PathVariable("id") Integer id) {
-        System.out.print(this.userService.queryById(id));
+//        System.out.print(this.userService.queryById(id));
         return ResponseEntity.ok(this.userService.queryById(id));
     }
 

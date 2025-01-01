@@ -11,10 +11,13 @@ public class LoginInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         Boolean ret = HandlerInterceptor.super.preHandle(request, response, handler);
         HttpSession session = request.getSession();
+        String username = (String) session.getServletContext().getAttribute("username");
+        System.out.print("session:" + username);
         if (session.getAttribute("username") == null) {
             response.sendRedirect("/login");
             return false;
         }
-        return ret;
+        System.out.print(ret);
+        return true;
     }
 }
